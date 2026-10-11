@@ -54,28 +54,34 @@ def shoot(pw):
     b = pw.chromium.launch()
     # Desktop full page (stage 4 frozen)
     pg = b.new_page(viewport={"width": 1440, "height": 900}, device_scale_factor=1)
-    pg.goto(PAGE + "?stage=4", wait_until="networkidle"); pg.evaluate("document.fonts.ready")
+    pg.goto(PAGE + "?stage=4&theme=light", wait_until="networkidle"); pg.evaluate("document.fonts.ready")
     pg.add_style_tag(content=STATIC_CSS); pg.wait_for_timeout(400)
     pg.screenshot(path=SHOTS / "desktop-full.png", full_page=True)
     pg.screenshot(path=SHOTS / "desktop-hero.png")
     # Each stage of the key moment, captured as it appears in the sticky viewport
     for s in range(5):
         p2 = b.new_page(viewport={"width": 1440, "height": 900})
-        p2.goto(PAGE + f"?stage={s}", wait_until="networkidle"); p2.evaluate("document.fonts.ready")
+        p2.goto(PAGE + f"?stage={s}&theme=light", wait_until="networkidle"); p2.evaluate("document.fonts.ready")
         p2.add_style_tag(content="*{transition:none!important}")
         p2.wait_for_timeout(250)
         p2.locator(".cutting-room_sticky .container-large").screenshot(path=SHOTS / f"stage-{s}.png")
         p2.close()
     # Mobile full page
     m = b.new_page(viewport={"width": 390, "height": 844}, device_scale_factor=2)
-    m.goto(PAGE + "?stage=4", wait_until="networkidle"); m.evaluate("document.fonts.ready")
+    m.goto(PAGE + "?stage=4&theme=light", wait_until="networkidle"); m.evaluate("document.fonts.ready")
     m.add_style_tag(content=STATIC_CSS); m.wait_for_timeout(400)
     m.screenshot(path=SHOTS / "mobile-full.png", full_page=True)
+    # Dark theme (toggle in nav) — desktop full page + hero
+    d = b.new_page(viewport={"width": 1440, "height": 900}, device_scale_factor=1)
+    d.goto(PAGE + "?stage=4&theme=dark", wait_until="networkidle"); d.evaluate("document.fonts.ready")
+    d.add_style_tag(content=STATIC_CSS); d.wait_for_timeout(400)
+    d.screenshot(path=SHOTS / "dark-hero.png")
+    d.screenshot(path=SHOTS / "dark-full.png", full_page=True)
     b.close()
 
 
 def sheets():
-    s = {k: b64(SHOTS / f"{k}.png") for k in ["desktop-full", "desktop-hero", "mobile-full"] + [f"stage-{i}" for i in range(5)]}
+    s = {k: b64(SHOTS / f"{k}.png") for k in ["desktop-full", "desktop-hero", "mobile-full", "dark-hero", "dark-full"] + [f"stage-{i}" for i in range(5)]}
     out = []
 
     out.append(("cover", 1600, 1000, f"""
@@ -86,7 +92,7 @@ def sheets():
 <div>
 <p style="font-size:19px;max-width:620px">A redesigned opus.pro homepage that proves the rebrand thesis <b>"Made in the edit."</b> Light editing-bench surfaces, a dark screening band only where footage plays, and a two-ink system: <span class="v">violet = what the agent found</span>, <span class="r">red = what the human decided</span>.</p>
 <h3 style="margin-top:28px">In this PDF</h3>
-<ol style="padding-left:18px"><li>Desktop homepage — full frame, annotated</li><li>Key interactive moment — "The Cutting Room" scroll sequence, 5 states + Rive/Webflow build spec</li><li>Mobile frame (390 px) + secondary motion</li><li>Design tokens + Webflow class map</li></ol>
+<ol style="padding-left:18px"><li>Desktop homepage — full frame, annotated</li><li>Key interactive moment — "The Cutting Room" scroll sequence, 5 states + Rive/Webflow build spec</li><li>Mobile frame (390 px) + secondary motion</li><li>Design tokens + Webflow class map</li><li>Dark mode (visitor toggle)</li></ol>
 <p class="tc" style="margin-top:24px">Frames rendered from the production HTML/CSS (page/index.html) with Playwright — no Figma file. Every block uses Webflow-style classes so it rebuilds 1:1.</p>
 </div>
 <img src="{s['desktop-hero']}">
@@ -97,7 +103,7 @@ def sheets():
 <img src="{s['desktop-full']}" style="width:1000px">
 <div style="position:sticky;top:0">
 <span class="tc">Frame 01 · Desktop 1440 · full page</span><h2>Homepage, top to bottom</h2>
-<div class="note"><span class="n">1</span><div><h3>Nav — plain, modern</h3><p>Theme never touches navigation. Four links instead of today's 13-feature mega-menu. Ink-black primary CTA.</p></div></div>
+<div class="note"><span class="n">1</span><div><h3>Nav — plain, modern</h3><p>Theme never touches navigation. Four links instead of today's 13-feature mega-menu. Ink-black primary CTA. Light/dark toggle (see Frame 04).</p></div></div>
 <div class="note"><span class="n h">2</span><div><h3>Hero — "You shot it. We'll make the cut."</h3><p>Condensed slate display (Archivo 62% width). A <span class="r">red grease-pencil</span> stroke draws under "make the cut" on load (0.9s, delay 0.5s, ease <code>cubic-bezier(.6,0,.2,1)</code>). Right column: paste-a-link drop zone + proof stats.</p></div></div>
 <div class="note"><span class="n">3</span><div><h3>The Cutting Room — key moment</h3><p>Dark screening band. Scroll-driven Rive sequence: roll → agent marks → splice → trim bin → human approves. Full spec on the next page.</p></div></div>
 <div class="note"><span class="n">4</span><div><h3>Three takes (slates)</h3><p>Slate clapper stripe + scene/take/time header are the only themed parts; body copy is plain. Each card tagged with whose ink it is.</p></div></div>
@@ -188,6 +194,17 @@ def sheets():
 <h3 style="margin-top:22px">Webflow class map</h3>
 <p><code>navbar</code> · <code>section_hero</code> · <code>section_cutting-room</code> + <code>cutting-room_sticky</code> · <code>section_how</code> + <code>slate</code> (component) · <code>section_inks</code> · <code>section_reels</code> + <code>reel</code> (component, CMS-ready) · <code>section_proof</code> · <code>section_cta</code> + <code>leader</code> · <code>footer</code>. Global: <code>container-large</code>, <code>heading-display</code>, <code>button is-primary/is-secondary/is-light</code>, <code>timecode</code>, <code>sprocket-rail</code>, <code>mark-human</code>, <code>ink-tag is-agent/is-human</code>.</p>
 <p class="tc" style="margin-top:14px">Placeholders: footage frames are vector stand-ins; swap for real customer clips via CMS. Logo mark is a placeholder — logo work is out of scope for this PoC.</p>
+</div></div>"""))
+    out.append(("dark", 1600, 0, f"""
+<div class="sheet" style="display:grid;grid-template-columns:1000px 1fr;gap:44px;align-items:start">
+<img src="{s['dark-full']}" style="width:1000px">
+<div>
+<span class="tc">Frame 04 · Dark mode · visitor toggle</span><h2>Same room,<br>lights down</h2>
+<img src="{s['dark-hero']}" style="margin-bottom:22px">
+<div class="note"><span class="n">1</span><div><h3>Toggle</h3><p>Nav button (moon / sun + label), <code>aria-pressed</code>, keyboard-focusable. Default follows the OS (<code>prefers-color-scheme</code>); a visitor's choice is remembered (<code>localStorage</code>). Set before first paint, so no flash.</p></div></div>
+<div class="note"><span class="n">2</span><div><h3>Only tokens change</h3><p>Bench → #191715, ink → #EDEBE6, cards → #211F1C. The screening band drops a step to #0A0908 so footage still reads as "the screen". No component has its own dark styles.</p></div></div>
+<div class="note"><span class="n h">3</span><div><h3>Inks keep their meaning</h3><p>Agent violet lifts to #B79BFF and human red text to #FF7A6E for contrast on dark; strokes keep #6723FF / #D9271C fills where they sit on footage.</p></div></div>
+<div class="note"><span class="n">4</span><div><h3>Webflow build</h3><p>Two Variable modes (Light / Dark) in Webflow Variables; a 10-line embed sets <code>data-theme</code> on <code>&lt;html&gt;</code> and the toggle flips it. Rive file unchanged (it sits in the screening band, which is dark in both modes).</p></div></div>
 </div></div>"""))
     return out
 

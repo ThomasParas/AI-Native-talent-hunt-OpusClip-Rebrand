@@ -24,6 +24,9 @@ All times PDT.
 - **15:37** — README + `scripts/package.sh`. Fresh-unzip test: both PDFs open (thesis 2 pp, frames 5 pp); live `page/index.html` from the unzipped copy runs with zero JS errors and the scroll sequence advances stages. Secrets scan of zip + git history: clean; no `.env` used (no API keys needed for this assignment).
 - **15:40** — Final package + push.
 
+- **15:41** — Thomas: no extras beyond the deliverables, but add a **light/dark toggle** ("not everyone will be happy with light mode").
+- **15:42** — Implemented as tokens only: all theme-dependent colors moved to CSS variables, one `[data-theme="dark"]` block overrides them (bench #191715, ink #EDEBE6; violet/red text lifted to #B79BFF/#FF7A6E for contrast). Screening band uses constant `--on-screen` colors so it's correct in both modes. Nav toggle: `aria-pressed`, default from `prefers-color-scheme`, choice persisted in `localStorage` (try/catch), applied in `<head>` before paint (no flash). Light frames pinned to `?theme=light`; added Frame 04 (dark mode) to the PDF; one-line thesis update in the dark-mode risk.
+
 ## Deliberate trade-offs (disclosed)
 - No Figma file; frames are rendered from production HTML/CSS (Webflow-mappable classes). The Rive file is specified, not built.
 - Footage frames + logo mark are vector placeholders. Proof stats from brief/media kit, flagged for verification.

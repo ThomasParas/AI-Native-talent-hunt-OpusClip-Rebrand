@@ -10,7 +10,7 @@ Submission for the AI-Native Talent Hunt (OpusClip · Senior Visual Designer), O
 | `page/index.html` | The production HTML/CSS the frames were rendered from. Open it in a browser and scroll to see the key moment live. |
 
 ## View the live page
-Open `page/index.html` in Chrome/Safari (needs internet for Google Fonts). Scroll through the dark "Cutting Room" band to scrub the animation. Add `?stage=0`…`?stage=4` to the URL to freeze a state.
+Open `page/index.html` in Chrome/Safari (needs internet for Google Fonts). Scroll through the dark "Cutting Room" band to scrub the animation. Add `?stage=0`…`?stage=4` to the URL to freeze a state. Use the Light/Dark button in the nav (or `?theme=dark`) to switch themes; the default follows your OS setting.
 
 ## Direction in one paragraph
 OpusClip is the editor's bench, automated. A light bone "bench" surface for reading and deciding, a dark "screening band" only where footage plays, condensed slate-style display type, and a **two-ink system**: violet (OpusClip's existing purple) marks what the agent found, red grease pencil marks what the human decided. Film-editing cues (sprocket rails, slates, timecode, trim bin) stay at the edges — ≤10% of any screen — so the theme never gets in the way of using the site.

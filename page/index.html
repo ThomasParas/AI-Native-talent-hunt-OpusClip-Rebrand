@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>OpusClip — You shot it. We'll make the cut.</title>
+<script>
+(function(){ var t=null; try{ t=localStorage.getItem('oc-theme'); }catch(e){}
+  var q=new URLSearchParams(location.search).get('theme'); if(q==='light'||q==='dark') t=q;
+  if(!t) t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  document.documentElement.dataset.theme=t; })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -27,11 +33,28 @@
   --human:#D9271C;        /* RED grease pencil = the human's marks (strokes only, never fills/buttons) */
   --human-text:#A3160E;   /* red when used as small text on bench (AA) */
   --line:rgba(20,18,16,.14);
+  --card:#F6F5F1;         /* raised card on bench */
+  --nav-bg:rgba(237,235,230,.92);
+  --rail-hole:rgba(20,18,16,.16);
+  --dash:rgba(20,18,16,.35);
+  --agent-text:#6723FF;   /* violet as text/outline (AA on bench) */
+  --on-screen:#EDEBE6;    /* text on the screening band — constant in both themes */
+  --on-screen-ink:#141210;
+  color-scheme:light;
   /* Type */
   --display:"Archivo", "Arial Narrow", sans-serif;
   --body:"Geist", system-ui, sans-serif;
   --mono:"Geist Mono", ui-monospace, monospace;
   --radius:6px;
+}
+/* DARK THEME — same system, bench goes dark. Inks keep their meaning; violet/red lifted for contrast.
+   Screening band drops a step darker so footage still reads as "the screen". */
+:root[data-theme="dark"]{
+  --bench:#191715; --bench-2:#22201D; --screen:#0A0908; --screen-2:#141210;
+  --ink:#EDEBE6; --ink-2:#A8A29A; --line:rgba(237,235,230,.14);
+  --card:#211F1C; --nav-bg:rgba(25,23,21,.9); --rail-hole:rgba(237,235,230,.16); --dash:rgba(237,235,230,.3);
+  --agent-text:#B79BFF; --human-text:#FF7A6E;
+  color-scheme:dark;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -40,7 +63,7 @@ a{color:inherit;text-decoration:none}
 .container-large{max-width:1240px;margin:0 auto;padding:0 32px}
 
 /* ---------- Peripheral motifs (the ≤10% rule) ---------- */
-.sprocket-rail{height:14px;background:repeating-linear-gradient(90deg, transparent 0 10px, var(--rail-hole, rgba(20,18,16,.16)) 10px 22px, transparent 22px 32px);
+.sprocket-rail{height:14px;background:repeating-linear-gradient(90deg, transparent 0 10px, var(--rail-hole) 10px 22px, transparent 22px 32px);
   -webkit-mask:linear-gradient(#000 0 0) center/100% 6px no-repeat; mask:linear-gradient(#000 0 0) center/100% 6px no-repeat}
 .sprocket-rail.is-dark{--rail-hole:rgba(237,235,230,.18)}
 .timecode{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--ink-2);text-transform:uppercase}
@@ -61,11 +84,11 @@ a{color:inherit;text-decoration:none}
 .button:hover{transform:translateY(-1px)}
 .button.is-primary{background:var(--ink);color:var(--bench)}
 .button.is-secondary{border:1.5px solid var(--ink);color:var(--ink)}
-.button.is-light{background:var(--bench);color:var(--ink)}
+.button.is-light{background:var(--on-screen);color:var(--on-screen-ink)}
 .button .rec{width:9px;height:9px;border-radius:50%;background:var(--human)}
 
 /* ---------- Nav ---------- */
-.navbar{position:sticky;top:0;z-index:20;background:rgba(237,235,230,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.navbar{position:sticky;top:0;z-index:20;background:var(--nav-bg);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .navbar_inner{display:flex;align-items:center;justify-content:space-between;height:68px}
 .navbar_logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:19px;letter-spacing:-.01em}
 .navbar_logo .logo-mark{width:26px;height:26px}
@@ -73,6 +96,13 @@ a{color:inherit;text-decoration:none}
 .navbar_links a:hover{color:var(--ink)}
 .navbar_cta{display:flex;gap:10px;align-items:center}
 .navbar_cta .button{height:40px;font-size:14px;padding:0 16px}
+.theme-toggle{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 12px;border-radius:var(--radius);border:1px solid var(--line);background:transparent;color:var(--ink);font:500 12px var(--mono);letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+.theme-toggle:hover{border-color:var(--ink)}
+.theme-toggle:focus-visible{outline:2px solid var(--agent-text);outline-offset:2px}
+.theme-toggle svg{width:16px;height:16px}
+.theme-toggle .i-sun{display:none}
+[data-theme="dark"] .theme-toggle .i-sun{display:block}
+[data-theme="dark"] .theme-toggle .i-moon{display:none}
 
 /* ---------- Hero (bench) ---------- */
 .section_hero{padding:72px 0 64px}
@@ -84,7 +114,7 @@ a{color:inherit;text-decoration:none}
 .hero_meta{display:flex;gap:28px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line)}
 .hero_meta div{font-size:14px;color:var(--ink-2)}
 .hero_meta strong{display:block;font-family:var(--display);font-stretch:62%;font-weight:800;font-size:34px;color:var(--ink);line-height:1}
-.hero_drop{border:1.5px dashed rgba(20,18,16,.35);border-radius:10px;padding:22px;background:var(--bench-2)}
+.hero_drop{border:1.5px dashed var(--dash);border-radius:10px;padding:22px;background:var(--bench-2)}
 .hero_drop .timecode{display:block;margin-bottom:10px}
 .hero_drop-field{display:flex;gap:8px;background:var(--bench);border:1px solid var(--line);border-radius:var(--radius);padding:6px 6px 6px 14px;align-items:center}
 .hero_drop-field span{flex:1;color:var(--ink-2);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -92,17 +122,17 @@ a{color:inherit;text-decoration:none}
 .hero_drop small{display:block;margin-top:10px;font-size:13px;color:var(--ink-2)}
 
 /* ---------- THE CUTTING ROOM (dark screening band, key interactive moment) ---------- */
-.section_cutting-room{background:var(--screen);color:var(--bench);height:420vh;position:relative}
+.section_cutting-room{background:var(--screen);color:var(--on-screen);height:420vh;position:relative}
 .cutting-room_sticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
 .cutting-room_sticky > .container-large{width:100%}
 .cutting-room_head{display:flex;justify-content:space-between;align-items:end;margin-bottom:28px;gap:20px}
 .cutting-room_head .timecode{color:rgba(237,235,230,.55)}
-.cutting-room_head .timecode b{color:var(--bench)}
+.cutting-room_head .timecode b{color:var(--on-screen)}
 .cutting-room_grid{display:grid;grid-template-columns:260px 1fr;gap:40px;align-items:center}
 .cr-steps{list-style:none;display:flex;flex-direction:column;gap:6px}
 .cr-steps li{padding:12px 14px;border-left:2px solid rgba(237,235,230,.12);color:rgba(237,235,230,.45);transition:all .35s ease;font-size:15px}
 .cr-steps li b{display:block;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;margin-bottom:2px}
-.cr-steps li.is-active{color:var(--bench);border-left-color:var(--bench)}
+.cr-steps li.is-active{color:var(--on-screen);border-left-color:var(--on-screen)}
 .cr-steps li.is-agent.is-active{border-left-color:var(--agent-soft)}
 .cr-steps li.is-human.is-active{border-left-color:var(--human)}
 .cr-stage{position:relative;height:520px;border-radius:10px;background:var(--screen-2);overflow:hidden}
@@ -115,8 +145,8 @@ a{color:inherit;text-decoration:none}
 .cr-frame::after{content:attr(data-tc);position:absolute;left:6px;bottom:4px;font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.7)}
 .cr-frame .score{position:absolute;right:6px;top:6px;font-family:var(--mono);font-size:11px;font-weight:500;background:var(--agent);color:#fff;border-radius:3px;padding:2px 5px;opacity:0;transform:translateY(-4px);transition:all .35s ease}
 .cr-frame .ring{position:absolute;inset:3px;border:2.5px solid var(--agent-soft);border-radius:4px;opacity:0;transform:scale(1.08);transition:all .35s ease}
-.cr-playhead{position:absolute;top:18px;height:150px;left:50%;width:2px;background:var(--bench);box-shadow:0 0 0 1px rgba(0,0,0,.4);transition:opacity .4s}
-.cr-playhead::before{content:"";position:absolute;top:-8px;left:-6px;border:7px solid transparent;border-top-color:var(--bench)}
+.cr-playhead{position:absolute;top:18px;height:150px;left:50%;width:2px;background:var(--on-screen);box-shadow:0 0 0 1px rgba(0,0,0,.4);transition:opacity .4s}
+.cr-playhead::before{content:"";position:absolute;top:-8px;left:-6px;border:7px solid transparent;border-top-color:var(--on-screen)}
 .cr-strip_tc{position:absolute;left:24px;top:176px;font-family:var(--mono);font-size:12px;color:rgba(237,235,230,.6);transition:opacity .4s}
 
 /* Footage placeholder "people" (vector, no photos — swap for real customer footage in Webflow CMS) */
@@ -141,7 +171,7 @@ a{color:inherit;text-decoration:none}
 .cr-clip_meta .s{background:var(--agent);color:#fff;border-radius:3px;padding:1px 4px}
 .cr-approve{position:absolute;left:-14px;top:0;width:calc(100% + 28px);height:calc(100% + 12px);pointer-events:none;overflow:visible}
 .cr-approve path{fill:none;stroke:var(--human);stroke-width:4;stroke-linecap:round;stroke-dasharray:900;stroke-dashoffset:900;transition:stroke-dashoffset .8s cubic-bezier(.6,0,.2,1)}
-.cr-post{position:absolute;right:24px;top:-56px;display:flex;gap:8px;align-items:center;font-size:13px;background:var(--bench);color:var(--ink);border-radius:99px;padding:8px 14px 8px 10px;opacity:0;transform:translateY(8px);transition:all .4s ease .5s}
+.cr-post{position:absolute;right:24px;top:-56px;display:flex;gap:8px;align-items:center;font-size:13px;background:var(--on-screen);color:var(--on-screen-ink);border-radius:99px;padding:8px 14px 8px 10px;opacity:0;transform:translateY(8px);transition:all .4s ease .5s}
 .cr-post i{width:8px;height:8px;border-radius:50%;background:var(--human)}
 
 /* ---- Stage states (data-stage on .section_cutting-room) ---- */
@@ -164,8 +194,8 @@ a{color:inherit;text-decoration:none}
 .section-head{display:flex;justify-content:space-between;align-items:end;gap:40px;margin-bottom:48px}
 .section-head p{max-width:420px;color:var(--ink-2)}
 .slate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.slate{background:#F6F5F1;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.slate_clapper{height:22px;background:repeating-linear-gradient(-55deg,var(--ink) 0 16px,#F6F5F1 16px 32px)}
+.slate{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.slate_clapper{height:22px;background:repeating-linear-gradient(-55deg,var(--ink) 0 16px,var(--card) 16px 32px)}
 .slate_meta{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}
 .slate_meta div{padding:8px 14px;font-family:var(--mono);font-size:11px;color:var(--ink-2);border-right:1px solid var(--line)}
 .slate_meta div:last-child{border:0}
@@ -175,12 +205,12 @@ a{color:inherit;text-decoration:none}
 .slate_body p{color:var(--ink-2);font-size:16px}
 .ink-tag{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase}
 .ink-tag i{width:14px;height:3px;border-radius:2px}
-.ink-tag.is-agent{color:var(--agent)} .ink-tag.is-agent i{background:var(--agent)}
+.ink-tag.is-agent{color:var(--agent-text)} .ink-tag.is-agent i{background:var(--agent)}
 .ink-tag.is-human{color:var(--human-text)} .ink-tag.is-human i{background:var(--human)}
 
 /* ---------- Two inks ---------- */
 .section_inks{padding:20px 0 110px}
-.inks_card{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#F6F5F1}
+.inks_card{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
 .inks_col{padding:40px}
 .inks_col + .inks_col{border-left:1px solid var(--line)}
 .inks_col h3{font-family:var(--display);font-stretch:62%;font-weight:800;font-size:44px;text-transform:uppercase;line-height:.95;margin:14px 0 12px}
@@ -189,7 +219,7 @@ a{color:inherit;text-decoration:none}
 .inks_swatch i{width:40px;height:6px;border-radius:3px}
 .inks_demo{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap}
 .inks_demo span{font-size:14px;padding:6px 10px;border-radius:4px;border:1.5px solid}
-.is-agent-demo span{border-color:var(--agent);color:var(--agent)}
+.is-agent-demo span{border-color:var(--agent-text);color:var(--agent-text)}
 .is-human-demo span{border-color:var(--human);color:var(--human-text)}
 
 /* ---------- Reels (product architecture) ---------- */
@@ -214,7 +244,7 @@ a{color:inherit;text-decoration:none}
 .proof_note{margin-top:22px;font-size:12px;color:var(--ink-2);font-family:var(--mono)}
 
 /* ---------- Final CTA (screening band + leader countdown) ---------- */
-.section_cta{background:var(--screen);color:var(--bench);padding:110px 0;text-align:center;position:relative;overflow:hidden}
+.section_cta{background:var(--screen);color:var(--on-screen);padding:110px 0;text-align:center;position:relative;overflow:hidden}
 .leader{width:150px;height:150px;margin:0 auto 34px;border-radius:50%;border:2px solid rgba(237,235,230,.5);position:relative;display:grid;place-items:center}
 .leader::before{content:"";position:absolute;inset:-2px;border-radius:50%;background:conic-gradient(rgba(237,235,230,.18) var(--sweep,0deg), transparent 0);animation:sweep 1s linear infinite}
 .leader::after{content:"";position:absolute;left:50%;top:-20px;bottom:-20px;width:1px;background:rgba(237,235,230,.3)}
@@ -243,7 +273,7 @@ a{color:inherit;text-decoration:none}
   .cr-steps{flex-direction:row}
   .cr-steps li{flex:1;padding:8px 4px;font-size:0;border-left:0;border-top:2px solid rgba(237,235,230,.12)}
   .cr-steps li b{font-size:9px}
-  .cr-steps li.is-active{border-top-color:var(--bench)}
+  .cr-steps li.is-active{border-top-color:var(--on-screen)}
   .cr-stage{height:440px}
   
   .cr-clip:nth-child(n+4){display:none}
@@ -266,13 +296,18 @@ a{color:inherit;text-decoration:none}
   <div class="container-large navbar_inner">
     <a href="#" class="navbar_logo" aria-label="OpusClip home">
       <!-- Placeholder mark: 9:16 frame + violet cut. Final logo work out of scope for this PoC. -->
-      <svg class="logo-mark" viewBox="0 0 26 26" aria-hidden="true"><rect x="7" y="2" width="12" height="22" rx="2.5" fill="none" stroke="#141210" stroke-width="2.4"/><path d="M3 15 L23 9" stroke="#6723FF" stroke-width="2.4" stroke-linecap="round"/></svg>
+      <svg class="logo-mark" viewBox="0 0 26 26" aria-hidden="true"><rect x="7" y="2" width="12" height="22" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M3 15 L23 9" stroke="#6723FF" stroke-width="2.4" stroke-linecap="round"/></svg>
       OpusClip
     </a>
     <nav class="navbar_links">
       <a href="#how">Product</a><a href="#reels">Agent &amp; API</a><a href="#proof">Customers</a><a href="#">Pricing</a>
     </nav>
     <div class="navbar_cta">
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false" aria-label="Switch to dark mode">
+        <svg class="i-moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 10.2A6 6 0 0 1 5.8 2.5a6 6 0 1 0 7.7 7.7Z" fill="currentColor"/></svg>
+        <svg class="i-sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></g></svg>
+        <span id="theme-label">Dark</span>
+      </button>
       <a href="#" class="button is-secondary">Log in</a>
       <a href="#" class="button is-primary">Start cutting — free</a>
     </div>
@@ -435,7 +470,7 @@ a{color:inherit;text-decoration:none}
   <div class="sprocket-rail"></div>
   <div class="container-large">
     <div class="footer_grid">
-      <div><div class="navbar_logo"><svg class="logo-mark" viewBox="0 0 26 26" aria-hidden="true"><rect x="7" y="2" width="12" height="22" rx="2.5" fill="none" stroke="#141210" stroke-width="2.4"/><path d="M3 15 L23 9" stroke="#6723FF" stroke-width="2.4" stroke-linecap="round"/></svg>OpusClip</div><p style="margin-top:10px;max-width:260px">Made in the edit.</p></div>
+      <div><div class="navbar_logo"><svg class="logo-mark" viewBox="0 0 26 26" aria-hidden="true"><rect x="7" y="2" width="12" height="22" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M3 15 L23 9" stroke="#6723FF" stroke-width="2.4" stroke-linecap="round"/></svg>OpusClip</div><p style="margin-top:10px;max-width:260px">Made in the edit.</p></div>
       <div><h4>Product</h4><ul><li>ClipAnything</li><li>AI Reframe</li><li>Captions</li><li>Scheduler</li></ul></div>
       <div><h4>Agent</h4><ul><li>AI Producer</li><li>Agent Opus</li><li>API</li><li>MCP</li></ul></div>
       <div><h4>For</h4><ul><li>Creators</li><li>Podcasters</li><li>Marketers</li><li>Agencies</li></ul></div>
@@ -479,6 +514,14 @@ a{color:inherit;text-decoration:none}
     tc.textContent='00:'+String(Math.floor(secs/60)).padStart(2,'0')+':'+String(secs%60).padStart(2,'0')+':'+String(Math.round(p*600)%24).padStart(2,'0');
   }
   addEventListener('scroll',onScroll,{passive:true}); onScroll();
+})();
+
+/* Light / dark toggle — choice persisted per visitor (falls back to OS setting) */
+(function(){
+  const btn=document.getElementById('theme-toggle'), label=document.getElementById('theme-label'), root=document.documentElement;
+  function sync(){ const dark=root.dataset.theme==='dark'; btn.setAttribute('aria-pressed',dark); label.textContent=dark?'Light':'Dark'; btn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode'); }
+  btn.addEventListener('click',()=>{ root.dataset.theme=root.dataset.theme==='dark'?'light':'dark'; try{ localStorage.setItem('oc-theme',root.dataset.theme); }catch(e){} sync(); });
+  sync();
 })();
 
 /* Leader countdown 3-2-1 */
