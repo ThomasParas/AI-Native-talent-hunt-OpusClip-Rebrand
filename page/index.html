@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpusClip — You shot it. We'll make the cut.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THE CUTTING ROOM — OpusClip proof-of-concept homepage
+   Class names follow Webflow Client-First style (section_, container-, heading-, button-)
+   so each block maps 1:1 to a Webflow class / symbol.
+   ============================================================ */
+:root{
+  /* Surfaces */
+  --bench:#EDEBE6;        /* light editing bench (default page) */
+  --bench-2:#E3E0D9;      /* recessed bench */
+  --screen:#0E0D0C;       /* dark screening band — only where footage plays */
+  --screen-2:#1A1816;
+  /* Inks */
+  --ink:#141210;          /* type + primary CTA */
+  --ink-2:#55504A;        /* secondary text */
+  --agent:#6723FF;        /* VIOLET = the agent's marks (OpusClip equity) */
+  --agent-soft:#B79BFF;   /* agent ink on dark */
+  --human:#D9271C;        /* RED grease pencil = the human's marks (strokes only, never fills/buttons) */
+  --human-text:#A3160E;   /* red when used as small text on bench (AA) */
+  --line:rgba(20,18,16,.14);
+  /* Type */
+  --display:"Archivo", "Arial Narrow", sans-serif;
+  --body:"Geist", system-ui, sans-serif;
+  --mono:"Geist Mono", ui-monospace, monospace;
+  --radius:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bench);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.container-large{max-width:1240px;margin:0 auto;padding:0 32px}
+
+/* ---------- Peripheral motifs (the ≤10% rule) ---------- */
+.sprocket-rail{height:14px;background:repeating-linear-gradient(90deg, transparent 0 10px, var(--rail-hole, rgba(20,18,16,.16)) 10px 22px, transparent 22px 32px);
+  -webkit-mask:linear-gradient(#000 0 0) center/100% 6px no-repeat; mask:linear-gradient(#000 0 0) center/100% 6px no-repeat}
+.sprocket-rail.is-dark{--rail-hole:rgba(237,235,230,.18)}
+.timecode{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--ink-2);text-transform:uppercase}
+.timecode b{color:var(--ink);font-weight:500}
+.mark-human{position:relative;white-space:nowrap}
+.mark-human svg{position:absolute;left:-2%;bottom:-.14em;width:104%;height:.42em;overflow:visible}
+.mark-human path{fill:none;stroke:var(--human);stroke-width:5;stroke-linecap:round;stroke-dasharray:420;stroke-dashoffset:420;animation:draw 0.9s .5s cubic-bezier(.6,0,.2,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+/* ---------- Type ---------- */
+.heading-display{font-family:var(--display);font-stretch:62%;font-weight:800;line-height:.92;letter-spacing:-.005em;text-transform:uppercase}
+.heading-xl{font-size:clamp(56px,9.2vw,132px)}
+.heading-l{font-size:clamp(40px,5.6vw,76px)}
+.text-lead{font-size:20px;line-height:1.45;color:var(--ink-2);max-width:560px}
+
+/* ---------- Buttons ---------- */
+.button{display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 22px;border-radius:var(--radius);font-weight:600;font-size:16px;transition:transform .15s ease, background .15s ease}
+.button:hover{transform:translateY(-1px)}
+.button.is-primary{background:var(--ink);color:var(--bench)}
+.button.is-secondary{border:1.5px solid var(--ink);color:var(--ink)}
+.button.is-light{background:var(--bench);color:var(--ink)}
+.button .rec{width:9px;height:9px;border-radius:50%;background:var(--human)}
+
+/* ---------- Nav ---------- */
+.navbar{position:sticky;top:0;z-index:20;background:rgba(237,235,230,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.navbar_inner{display:flex;align-items:center;justify-content:space-between;height:68px}
+.navbar_logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:19px;letter-spacing:-.01em}
+.navbar_logo .logo-mark{width:26px;height:26px}
+.navbar_links{display:flex;gap:30px;font-size:15px;color:var(--ink-2)}
+.navbar_links a:hover{color:var(--ink)}
+.navbar_cta{display:flex;gap:10px;align-items:center}
+.navbar_cta .button{height:40px;font-size:14px;padding:0 16px}
+
+/* ---------- Hero (bench) ---------- */
+.section_hero{padding:72px 0 64px}
+.hero_grid{display:grid;grid-template-columns:1.35fr 1fr;gap:48px;align-items:end}
+.hero_eyebrow{display:flex;gap:16px;align-items:center;margin-bottom:28px;flex-wrap:wrap}
+.hero_eyebrow .pill{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:99px;padding:5px 10px;color:var(--ink-2)}
+.hero_eyebrow .pill i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--agent);margin-right:7px;vertical-align:1px}
+.hero_buttons{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap}
+.hero_meta{display:flex;gap:28px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line)}
+.hero_meta div{font-size:14px;color:var(--ink-2)}
+.hero_meta strong{display:block;font-family:var(--display);font-stretch:62%;font-weight:800;font-size:34px;color:var(--ink);line-height:1}
+.hero_drop{border:1.5px dashed rgba(20,18,16,.35);border-radius:10px;padding:22px;background:var(--bench-2)}
+.hero_drop .timecode{display:block;margin-bottom:10px}
+.hero_drop-field{display:flex;gap:8px;background:var(--bench);border:1px solid var(--line);border-radius:var(--radius);padding:6px 6px 6px 14px;align-items:center}
+.hero_drop-field span{flex:1;color:var(--ink-2);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero_drop-field .button{height:42px;font-size:14px}
+.hero_drop small{display:block;margin-top:10px;font-size:13px;color:var(--ink-2)}
+
+/* ---------- THE CUTTING ROOM (dark screening band, key interactive moment) ---------- */
+.section_cutting-room{background:var(--screen);color:var(--bench);height:420vh;position:relative}
+.cutting-room_sticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.cutting-room_head{display:flex;justify-content:space-between;align-items:end;margin-bottom:28px;gap:20px}
+.cutting-room_head .timecode{color:rgba(237,235,230,.55)}
+.cutting-room_head .timecode b{color:var(--bench)}
+.cutting-room_grid{display:grid;grid-template-columns:260px 1fr;gap:40px;align-items:center}
+.cr-steps{list-style:none;display:flex;flex-direction:column;gap:6px}
+.cr-steps li{padding:12px 14px;border-left:2px solid rgba(237,235,230,.12);color:rgba(237,235,230,.45);transition:all .35s ease;font-size:15px}
+.cr-steps li b{display:block;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;margin-bottom:2px}
+.cr-steps li.is-active{color:var(--bench);border-left-color:var(--bench)}
+.cr-steps li.is-agent.is-active{border-left-color:var(--agent-soft)}
+.cr-steps li.is-human.is-active{border-left-color:var(--human)}
+.cr-stage{position:relative;height:520px;border-radius:10px;background:var(--screen-2);overflow:hidden}
+
+/* Film strip (the long video) */
+.cr-strip{position:absolute;left:0;top:34px;height:150px;display:flex;flex-direction:column;justify-content:space-between;transition:top .7s cubic-bezier(.6,0,.2,1), opacity .5s ease}
+.cr-strip_rail{height:14px;width:100%;background:repeating-linear-gradient(90deg, #2a2724 0 8px, #000 8px 18px, #2a2724 18px 26px)}
+.cr-strip_frames{display:flex;gap:6px;padding:0 6px;transform:translateX(calc(var(--roll,0) * -1px));transition:transform .2s linear}
+.cr-frame{position:relative;flex:0 0 172px;height:110px;border-radius:3px;overflow:hidden;transition:transform .6s cubic-bezier(.6,0,.2,1), opacity .4s ease}
+.cr-frame::after{content:attr(data-tc);position:absolute;left:6px;bottom:4px;font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.7)}
+.cr-frame .score{position:absolute;right:6px;top:6px;font-family:var(--mono);font-size:11px;font-weight:500;background:var(--agent);color:#fff;border-radius:3px;padding:2px 5px;opacity:0;transform:translateY(-4px);transition:all .35s ease}
+.cr-frame .ring{position:absolute;inset:3px;border:2.5px solid var(--agent-soft);border-radius:4px;opacity:0;transform:scale(1.08);transition:all .35s ease}
+.cr-playhead{position:absolute;top:18px;height:190px;left:50%;width:2px;background:var(--bench);box-shadow:0 0 0 1px rgba(0,0,0,.4);transition:opacity .4s}
+.cr-playhead::before{content:"";position:absolute;top:-8px;left:-6px;border:7px solid transparent;border-top-color:var(--bench)}
+.cr-strip_tc{position:absolute;left:24px;top:220px;font-family:var(--mono);font-size:12px;color:rgba(237,235,230,.6);transition:opacity .4s}
+
+/* Footage placeholder "people" (vector, no photos — swap for real customer footage in Webflow CMS) */
+.ph{position:absolute;inset:0;background:var(--bg)}
+.ph::before{content:"";position:absolute;left:50%;bottom:-18%;width:46%;height:62%;transform:translateX(-50%);border-radius:48% 48% 0 0;background:var(--body-c)}
+.ph::after{content:"";position:absolute;left:50%;top:22%;width:22%;aspect-ratio:1;transform:translateX(-50%);border-radius:50%;background:var(--face)}
+.ph-a{--bg:linear-gradient(160deg,#3b4a5a,#1f2a33);--body-c:#c4572f;--face:#e2b48f}
+.ph-b{--bg:linear-gradient(160deg,#5a4634,#2c2219);--body-c:#2f4f6b;--face:#b8835d}
+.ph-c{--bg:linear-gradient(160deg,#2f4a3c,#18261f);--body-c:#d9d2c3;--face:#8c5b3e}
+.ph-d{--bg:linear-gradient(160deg,#4b3a56,#221a28);--body-c:#e0a03a;--face:#efc6a3}
+
+/* Trim bin (clips hang on pins) */
+.cr-bin{position:absolute;left:0;right:0;bottom:26px;height:330px;opacity:0;transform:translateY(30px);transition:all .7s cubic-bezier(.6,0,.2,1)}
+.cr-bin_bar{position:absolute;left:24px;right:24px;top:0;height:6px;border-radius:3px;background:#3a3633}
+.cr-bin_clips{position:absolute;left:24px;right:24px;top:0;display:flex;justify-content:space-around}
+.cr-clip{position:relative;width:150px;padding-top:14px;transform-origin:top center;transition:transform .5s ease, opacity .4s ease}
+.cr-clip::before{content:"";position:absolute;top:-4px;left:50%;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#8c8781;box-shadow:0 0 0 3px #3a3633}
+.cr-clip_frame{position:relative;width:150px;aspect-ratio:9/16;border-radius:6px;overflow:hidden}
+.cr-clip_cap{position:absolute;left:8px;right:8px;bottom:34px;font-weight:600;font-size:13px;line-height:1.15;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.cr-clip_cap em{font-style:normal;background:#ffe14d;color:#141210;padding:0 3px}
+.cr-clip_meta{position:absolute;left:8px;right:8px;bottom:8px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.8)}
+.cr-clip_meta .s{background:var(--agent);color:#fff;border-radius:3px;padding:1px 4px}
+.cr-approve{position:absolute;left:-14px;top:0;width:calc(100% + 28px);height:calc(100% + 12px);pointer-events:none;overflow:visible}
+.cr-approve path{fill:none;stroke:var(--human);stroke-width:4;stroke-linecap:round;stroke-dasharray:900;stroke-dashoffset:900;transition:stroke-dashoffset .8s cubic-bezier(.6,0,.2,1)}
+.cr-post{position:absolute;right:24px;top:-56px;display:flex;gap:8px;align-items:center;font-size:13px;background:var(--bench);color:var(--ink);border-radius:99px;padding:8px 14px 8px 10px;opacity:0;transform:translateY(8px);transition:all .4s ease .5s}
+.cr-post i{width:8px;height:8px;border-radius:50%;background:var(--human)}
+
+/* ---- Stage states (data-stage on .section_cutting-room) ---- */
+[data-stage="1"] .cr-frame.is-pick .ring,[data-stage="2"] .cr-frame.is-pick .ring{opacity:1;transform:none}
+[data-stage="1"] .cr-frame.is-pick .score,[data-stage="2"] .cr-frame.is-pick .score{opacity:1;transform:none}
+[data-stage="2"] .cr-frame:not(.is-pick){opacity:.25}
+[data-stage="2"] .cr-frame.is-pick{transform:translateY(-14px)}
+[data-stage="3"] .cr-strip,[data-stage="4"] .cr-strip{top:-40px;opacity:.35}
+[data-stage="3"] .cr-playhead,[data-stage="4"] .cr-playhead,[data-stage="3"] .cr-strip_tc,[data-stage="4"] .cr-strip_tc{opacity:0}
+[data-stage="3"] .cr-bin,[data-stage="4"] .cr-bin{opacity:1;transform:none}
+[data-stage="3"] .cr-clip:nth-child(odd){transform:rotate(-1.2deg)}
+[data-stage="3"] .cr-clip:nth-child(even){transform:rotate(1deg)}
+[data-stage="4"] .cr-clip.is-approved .cr-approve path{stroke-dashoffset:0}
+[data-stage="4"] .cr-clip:not(.is-approved){opacity:.55}
+[data-stage="4"] .cr-post{opacity:1;transform:none}
+[data-stage="4"] .cr-clip.is-approved{transform:translateY(-6px)}
+
+/* ---------- How it cuts (slates) ---------- */
+.section_how{padding:110px 0 90px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:40px;margin-bottom:48px}
+.section-head p{max-width:420px;color:var(--ink-2)}
+.slate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.slate{background:#F6F5F1;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.slate_clapper{height:22px;background:repeating-linear-gradient(-55deg,var(--ink) 0 16px,#F6F5F1 16px 32px)}
+.slate_meta{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}
+.slate_meta div{padding:8px 14px;font-family:var(--mono);font-size:11px;color:var(--ink-2);border-right:1px solid var(--line)}
+.slate_meta div:last-child{border:0}
+.slate_meta b{display:block;color:var(--ink);font-weight:500;font-size:13px}
+.slate_body{padding:22px 22px 26px}
+.slate_body h3{font-family:var(--display);font-stretch:62%;font-weight:800;text-transform:uppercase;font-size:30px;line-height:1;margin-bottom:10px}
+.slate_body p{color:var(--ink-2);font-size:16px}
+.ink-tag{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+.ink-tag i{width:14px;height:3px;border-radius:2px}
+.ink-tag.is-agent{color:var(--agent)} .ink-tag.is-agent i{background:var(--agent)}
+.ink-tag.is-human{color:var(--human-text)} .ink-tag.is-human i{background:var(--human)}
+
+/* ---------- Two inks ---------- */
+.section_inks{padding:20px 0 110px}
+.inks_card{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#F6F5F1}
+.inks_col{padding:40px}
+.inks_col + .inks_col{border-left:1px solid var(--line)}
+.inks_col h3{font-family:var(--display);font-stretch:62%;font-weight:800;font-size:44px;text-transform:uppercase;line-height:.95;margin:14px 0 12px}
+.inks_col p{color:var(--ink-2);max-width:400px}
+.inks_swatch{display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:12px}
+.inks_swatch i{width:40px;height:6px;border-radius:3px}
+.inks_demo{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap}
+.inks_demo span{font-size:14px;padding:6px 10px;border-radius:4px;border:1.5px solid}
+.is-agent-demo span{border-color:var(--agent);color:var(--agent)}
+.is-human-demo span{border-color:var(--human);color:var(--human-text)}
+
+/* ---------- Reels (product architecture) ---------- */
+.section_reels{background:var(--bench-2);padding:100px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.reels_grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.reel{background:var(--bench);border:1px solid var(--line);border-radius:8px;padding:26px;display:flex;flex-direction:column;gap:12px;min-height:250px}
+.reel_num{display:flex;align-items:center;gap:12px}
+.reel_disc{width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);position:relative}
+.reel_disc::before{content:"";position:absolute;inset:8px;border-radius:50%;background:repeating-conic-gradient(var(--ink) 0 20deg, transparent 20deg 60deg)}
+.reel_disc::after{content:"";position:absolute;inset:17px;border-radius:50%;background:var(--bench)}
+.reel h3{font-size:22px;font-weight:600;letter-spacing:-.01em}
+.reel p{color:var(--ink-2);font-size:15px;flex:1}
+.reel a{font-weight:600;font-size:15px}
+.reel a::after{content:" →"}
+
+/* ---------- Proof ---------- */
+.section_proof{padding:110px 0}
+.proof_grid{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--ink)}
+.proof_stat{padding:22px 20px 0 0}
+.proof_stat strong{display:block;font-family:var(--display);font-stretch:62%;font-weight:800;font-size:64px;line-height:1}
+.proof_stat span{color:var(--ink-2);font-size:15px}
+.proof_note{margin-top:22px;font-size:12px;color:var(--ink-2);font-family:var(--mono)}
+
+/* ---------- Final CTA (screening band + leader countdown) ---------- */
+.section_cta{background:var(--screen);color:var(--bench);padding:110px 0;text-align:center;position:relative;overflow:hidden}
+.leader{width:150px;height:150px;margin:0 auto 34px;border-radius:50%;border:2px solid rgba(237,235,230,.5);position:relative;display:grid;place-items:center}
+.leader::before{content:"";position:absolute;inset:-2px;border-radius:50%;background:conic-gradient(rgba(237,235,230,.18) var(--sweep,0deg), transparent 0);animation:sweep 1s linear infinite}
+.leader::after{content:"";position:absolute;left:50%;top:-20px;bottom:-20px;width:1px;background:rgba(237,235,230,.3)}
+.leader span{position:relative;font-family:var(--display);font-stretch:62%;font-weight:800;font-size:84px;line-height:1}
+@property --sweep{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes sweep{to{--sweep:360deg}}
+.section_cta .text-lead{color:rgba(237,235,230,.7);margin:22px auto 34px}
+
+/* ---------- Footer ---------- */
+.footer{padding:56px 0 40px;font-size:14px;color:var(--ink-2)}
+.footer_grid{display:grid;grid-template-columns:2fr repeat(4,1fr);gap:24px;margin-top:28px}
+.footer h4{font-size:13px;color:var(--ink);margin-bottom:10px}
+.footer li{list-style:none;margin-bottom:6px}
+
+/* ---------- Responsive ---------- */
+@media (max-width:900px){
+  .container-large{padding:0 16px}
+  .navbar_links{display:none}
+  .hero_grid,.slate-grid,.inks_card,.reels_grid{grid-template-columns:1fr}
+  .inks_col + .inks_col{border-left:0;border-top:1px solid var(--line)}
+  .proof_grid{grid-template-columns:1fr 1fr}
+  .footer_grid{grid-template-columns:1fr 1fr}
+  .section-head{flex-direction:column;align-items:start}
+  .cutting-room_head{flex-direction:column;align-items:start}
+  .cutting-room_grid{grid-template-columns:1fr;gap:16px}
+  .cr-steps{flex-direction:row}
+  .cr-steps li{flex:1;padding:8px 4px;font-size:0;border-left:0;border-top:2px solid rgba(237,235,230,.12)}
+  .cr-steps li b{font-size:9px}
+  .cr-steps li.is-active{border-top-color:var(--bench)}
+  .cr-stage{height:440px}
+  .cr-clip{width:96px}.cr-clip_frame{width:96px}
+  .cr-clip:nth-child(n+4){display:none}
+  .cr-clip_cap{font-size:10px;bottom:28px}
+  .cr-post{right:8px;left:8px;font-size:11px}
+  .navbar_cta .button.is-secondary{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important}
+  .mark-human path{stroke-dashoffset:0}
+  .section_cutting-room{height:auto;padding:80px 0}
+  .cutting-room_sticky{position:relative;height:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="navbar">
+  <div class="container-large navbar_inner">
+    <a href="#" class="navbar_logo" aria-label="OpusClip home">
+      <!-- Placeholder mark: 9:16 frame + violet cut. Final logo work out of scope for this PoC. -->
+      <svg class="logo-mark" viewBox="0 0 26 26" aria-hidden="true"><rect x="7" y="2" width="12" height="22" rx="2.5" fill="none" stroke="#141210" stroke-width="2.4"/><path d="M3 15 L23 9" stroke="#6723FF" stroke-width="2.4" stroke-linecap="round"/></svg>
+      OpusClip
+    </a>
+    <nav class="navbar_links">
+      <a href="#how">Product</a><a href="#reels">Agent &amp; API</a><a href="#proof">Customers</a><a href="#">Pricing</a>
+    </nav>
+    <div class="navbar_cta">
+      <a href="#" class="button is-secondary">Log in</a>
+      <a href="#" class="button is-primary">Start cutting — free</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO (bench) -->
+<section class="section_hero">
+  <div class="container-large">
+    <div class="hero_eyebrow">
+      <span class="timecode"><b>TC 00:00:00:01</b> · Reel 01</span>
+      <span class="pill"><i></i>Now an editing agent — app, API &amp; MCP</span>
+    </div>
+    <div class="hero_grid">
+      <div>
+        <h1 class="heading-display heading-xl">You shot it.<br>We'll <span class="mark-human">make the cut.<svg viewBox="0 0 400 30" preserveAspectRatio="none" aria-hidden="true"><path d="M4 20 C 90 8, 210 6, 396 14 M 30 26 C 140 18, 260 18, 380 22"/></svg></span></h1>
+        <p class="text-lead" style="margin-top:28px">OpusClip is the AI editing agent that works from your real footage — finding the moments, cutting the clips, and posting them everywhere. Nothing staged. Just your best takes.</p>
+        <div class="hero_buttons">
+          <a href="#" class="button is-primary"><span class="rec"></span>Drop in a video</a>
+          <a href="#cutting-room" class="button is-secondary">Watch the agent cut ↓</a>
+        </div>
+      </div>
+      <div>
+        <div class="hero_drop">
+          <span class="timecode">Rough footage in · Clips out</span>
+          <div class="hero_drop-field"><span>youtube.com/watch?v=your-long-video</span><a href="#" class="button is-primary">Get clips</a></div>
+          <small>Podcasts, streams, webinars, vlogs. No editing skills required.</small>
+        </div>
+        <div class="hero_meta">
+          <div><strong>20M+</strong>creators &amp; businesses</div>
+          <div><strong>18 mo</strong>from launch to here</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE CUTTING ROOM — key interactive moment (spec in proof-of-concept-page.pdf) -->
+<section class="section_cutting-room" id="cutting-room" data-stage="0">
+  <div class="sprocket-rail is-dark"></div>
+  <div class="cutting-room_sticky">
+    <div class="container-large">
+      <div class="cutting-room_head">
+        <h2 class="heading-display heading-l">The cutting room,<br>always on.</h2>
+        <span class="timecode"><b id="cr-tc">00:00:00:00</b> · Scroll to roll</span>
+      </div>
+      <div class="cutting-room_grid">
+        <ol class="cr-steps">
+          <li class="is-active"><b>01 · ROLL</b>Your raw footage, all of it</li>
+          <li class="is-agent"><b>02 · MARK</b>The agent marks the moments</li>
+          <li class="is-agent"><b>03 · SPLICE</b>It cuts, reframes &amp; captions</li>
+          <li class="is-agent"><b>04 · HANG</b>Clips land in your trim bin</li>
+          <li class="is-human"><b>05 · APPROVE</b>You make the final call</li>
+        </ol>
+        <div class="cr-stage" aria-label="Animation: a long video is marked, cut into vertical clips, and approved">
+          <div class="cr-strip">
+            <div class="cr-strip_rail"></div>
+            <div class="cr-strip_frames" id="cr-frames"></div>
+            <div class="cr-strip_rail"></div>
+          </div>
+          <div class="cr-playhead"></div>
+          <div class="cr-strip_tc">RAW · 58:12 · 1 SPEAKER · 16:9</div>
+          <div class="cr-bin">
+            <div class="cr-bin_bar"></div>
+            <div class="cr-post"><i></i>Approved · posting to TikTok, Reels, Shorts, LinkedIn</div>
+            <div class="cr-bin_clips">
+              <div class="cr-clip is-approved"><div class="cr-clip_frame"><div class="ph ph-a"></div><div class="cr-clip_cap">"I almost <em>quit</em> the week it worked"</div><div class="cr-clip_meta"><span>0:42</span><span class="s">94</span></div></div>
+                <svg class="cr-approve" viewBox="0 0 182 300" preserveAspectRatio="none" aria-hidden="true"><path d="M90 6 C 30 4, 4 40, 6 150 C 8 260, 40 296, 92 294 C 150 292, 178 250, 176 140 C 174 40, 150 2, 70 10"/></svg>
+              </div>
+              <div class="cr-clip"><div class="cr-clip_frame"><div class="ph ph-b"></div><div class="cr-clip_cap">The <em>one</em> question every guest dodges</div><div class="cr-clip_meta"><span>0:58</span><span class="s">91</span></div></div></div>
+              <div class="cr-clip"><div class="cr-clip_frame"><div class="ph ph-c"></div><div class="cr-clip_cap">Why we stopped <em>chasing</em> views</div><div class="cr-clip_meta"><span>0:37</span><span class="s">88</span></div></div></div>
+              <div class="cr-clip"><div class="cr-clip_frame"><div class="ph ph-d"></div><div class="cr-clip_cap">"Just <em>post</em> the honest version"</div><div class="cr-clip_meta"><span>1:04</span><span class="s">86</span></div></div></div>
+              <div class="cr-clip"><div class="cr-clip_frame"><div class="ph ph-a"></div><div class="cr-clip_cap">Three minutes that <em>changed</em> the show</div><div class="cr-clip_meta"><span>0:51</span><span class="s">84</span></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT CUTS (slates) -->
+<section class="section_how" id="how">
+  <div class="container-large">
+    <div class="section-head">
+      <h2 class="heading-display heading-l">Three takes.<br>One workflow.</h2>
+      <p>Everything a good editor does, in the order they do it — with every decision marked so you can see who made it.</p>
+    </div>
+    <div class="slate-grid">
+      <article class="slate"><div class="slate_clapper"></div><div class="slate_meta"><div>SCENE<b>01</b></div><div>TAKE<b>Find</b></div><div>TIME<b>Minutes</b></div></div>
+        <div class="slate_body"><h3>Find the moments</h3><p>The agent watches the whole thing — every hook, laugh, and turn — and scores each moment for how well it stands alone.</p><span class="ink-tag is-agent"><i></i>Agent ink</span></div></article>
+      <article class="slate"><div class="slate_clapper"></div><div class="slate_meta"><div>SCENE<b>02</b></div><div>TAKE<b>Cut</b></div><div>TIME<b>Minutes</b></div></div>
+        <div class="slate_body"><h3>Cut, frame &amp; caption</h3><p>Reframed to 9:16 around whoever's talking, captioned in your brand style, with B-roll only where it helps the story.</p><span class="ink-tag is-agent"><i></i>Agent ink</span></div></article>
+      <article class="slate"><div class="slate_clapper"></div><div class="slate_meta"><div>SCENE<b>03</b></div><div>TAKE<b>Approve</b></div><div>TIME<b>You decide</b></div></div>
+        <div class="slate_body"><h3>Approve &amp; post</h3><p>You keep the final cut. Approve, tweak in the editor, or export to Premiere — then schedule everywhere in one pass.</p><span class="ink-tag is-human"><i></i>Your ink</span></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- TWO INKS -->
+<section class="section_inks">
+  <div class="container-large">
+    <div class="inks_card">
+      <div class="inks_col">
+        <div class="inks_swatch"><i style="background:var(--agent)"></i>VIOLET · THE AGENT</div>
+        <h3>What the agent<br>found.</h3>
+        <p>Every suggestion OpusClip makes is drawn in violet — moments, scores, cuts, captions. Nothing hidden, nothing final until you say so.</p>
+        <div class="inks_demo is-agent-demo"><span>Hook · 94</span><span>Cut at 12:04</span><span>Reframe → speaker</span></div>
+      </div>
+      <div class="inks_col">
+        <div class="inks_swatch"><i style="background:var(--human)"></i>RED · YOU</div>
+        <h3>What you<br>decided.</h3>
+        <p>Your approvals and edits are drawn in red, like an editor's grease pencil. Teams always know what a person signed off on.</p>
+        <div class="inks_demo is-human-demo"><span>✓ Approved</span><span>Trim 2s</span><span>Keep this line</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REELS (product architecture) -->
+<section class="section_reels" id="reels">
+  <div class="container-large">
+    <div class="section-head">
+      <h2 class="heading-display heading-l">One cutting room.<br>Three reels.</h2>
+      <p>One system for every way you work with OpusClip — from one click to a fully autonomous agent.</p>
+    </div>
+    <div class="reels_grid">
+      <article class="reel"><div class="reel_num"><div class="reel_disc"></div><span class="timecode"><b>Reel 01</b></span></div><h3>OpusClip</h3><p>Long video in, ready-to-post clips out. Captions, reframing, B-roll, scheduling.</p><a href="#">Clip a video</a></article>
+      <article class="reel"><div class="reel_num"><div class="reel_disc"></div><span class="timecode"><b>Reel 02</b></span></div><h3>AI Producer</h3><p>Raw talking-head footage to a polished, finished video — just by chatting with it.</p><a href="#">Produce a video</a></article>
+      <article class="reel"><div class="reel_num"><div class="reel_disc"></div><span class="timecode"><b>Reel 03</b></span></div><h3>Agent Opus · API &amp; MCP</h3><p>The same cutting room, callable by your own agents and pipelines.</p><a href="#">Read the docs</a></article>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section class="section_proof" id="proof">
+  <div class="container-large">
+    <div class="section-head"><h2 class="heading-display heading-l">Cut for 20 million<br>real people.</h2><p>Creators, podcasters, marketers, agencies, and media teams — all working from footage they actually shot.</p></div>
+    <div class="proof_grid">
+      <div class="proof_stat"><strong>20M+</strong><span>creators &amp; businesses</span></div>
+      <div class="proof_stat"><strong>18 mo</strong><span>launch to today</span></div>
+      <div class="proof_stat"><strong>30k+</strong><span>subscribers in 3 months — Caleb Hammer's shorts channel</span></div>
+      <div class="proof_stat"><strong>1/day</strong><span>shorts cadence SaaStr cold-started with OpusClip</span></div>
+    </div>
+    <p class="proof_note">Figures from the assignment brief and the public OpusClip media kit (media.opus.pro). PoC layout — verify before ship.</p>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="section_cta">
+  <div class="container-large">
+    <div class="leader" aria-hidden="true"><span id="leader-n">3</span></div>
+    <h2 class="heading-display heading-l">Your footage is already good.<br>Let's find it.</h2>
+    <p class="text-lead">Free to start. No editing skills required.</p>
+    <a href="#" class="button is-light"><span class="rec"></span>Drop in a video</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="sprocket-rail"></div>
+  <div class="container-large">
+    <div class="footer_grid">
+      <div><div class="navbar_logo"><svg class="logo-mark" viewBox="0 0 26 26" aria-hidden="true"><rect x="7" y="2" width="12" height="22" rx="2.5" fill="none" stroke="#141210" stroke-width="2.4"/><path d="M3 15 L23 9" stroke="#6723FF" stroke-width="2.4" stroke-linecap="round"/></svg>OpusClip</div><p style="margin-top:10px;max-width:260px">Made in the edit.</p></div>
+      <div><h4>Product</h4><ul><li>ClipAnything</li><li>AI Reframe</li><li>Captions</li><li>Scheduler</li></ul></div>
+      <div><h4>Agent</h4><ul><li>AI Producer</li><li>Agent Opus</li><li>API</li><li>MCP</li></ul></div>
+      <div><h4>For</h4><ul><li>Creators</li><li>Podcasters</li><li>Marketers</li><li>Agencies</li></ul></div>
+      <div><h4>Company</h4><ul><li>About</li><li>Careers</li><li>Media kit</li><li>Contact</li></ul></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* Build the film strip: 18 frames, 4 agent picks (static data, DOM methods only) */
+(function(){
+  const wrap=document.getElementById('cr-frames'), cls=['ph-a','ph-b','ph-c','ph-d'];
+  const picks={3:94,7:91,11:88,14:86};
+  const el=(tag,c,t)=>{const n=document.createElement(tag); if(c) n.className=c; if(t) n.textContent=t; return n;};
+  for(let i=0;i<18;i++){
+    const f=el('div','cr-frame'+(picks[i]?' is-pick':''));
+    f.dataset.tc='00:'+String(i*3+2).padStart(2,'0')+':'+String((i*17)%60).padStart(2,'0');
+    f.appendChild(el('div','ph '+cls[i%4]));
+    if(picks[i]){ f.appendChild(el('span','ring')); f.appendChild(el('span','score',String(picks[i]))); }
+    wrap.appendChild(f);
+  }
+})();
+
+/* Scroll → stage. In Webflow: a "while scrolling in view" interaction on .section_cutting-room
+   drives Rive input `progress` (0–100); the Rive state machine derives `stage` 0–4 (see spec PDF). */
+(function(){
+  const sec=document.querySelector('.section_cutting-room'), steps=[...document.querySelectorAll('.cr-steps li')];
+  const frames=document.getElementById('cr-frames'), tc=document.getElementById('cr-tc');
+  const forced=new URLSearchParams(location.search).get('stage');
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function setStage(s){ sec.dataset.stage=s; steps.forEach((li,i)=>li.classList.toggle('is-active',i===+s)); }
+  function onScroll(){
+    if(forced!==null){ setStage(forced); frames.style.setProperty('--roll', +forced>0?560:200); tc.textContent=['00:09:41:12','00:21:07:03','00:34:55:18','00:47:30:09','00:58:12:00'][+forced]||''; return; }
+    if(reduce){ setStage(4); return; }
+    const r=sec.getBoundingClientRect(), total=sec.offsetHeight-innerHeight;
+    const p=Math.min(1,Math.max(0,-r.top/total));
+    frames.style.setProperty('--roll', Math.min(p/0.2,1)*560);
+    const s = p<.2?0 : p<.4?1 : p<.6?2 : p<.8?3 : 4;
+    if(sec.dataset.stage!=String(s)) setStage(s);
+    const secs=Math.round(p*3492);
+    tc.textContent='00:'+String(Math.floor(secs/60)).padStart(2,'0')+':'+String(secs%60).padStart(2,'0')+':'+String(Math.round(p*600)%24).padStart(2,'0');
+  }
+  addEventListener('scroll',onScroll,{passive:true}); onScroll();
+})();
+
+/* Leader countdown 3-2-1 */
+(function(){ const n=document.getElementById('leader-n'); let i=3; setInterval(()=>{ i=i<=1?3:i-1; n.textContent=i; },1000); })();
+</script>
+</body>
+</html>
